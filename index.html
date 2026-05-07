@@ -1,73 +1,102 @@
 <!doctype html>
-<html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>隱私權錯誤</title>
+</head>
 <body>
-<script>
-(function() {
-    const redColor = '#d13936';
-    const targetUrl = 'https://youtu.be/klfT41uZniI?si=Xk9YeFLaRynAQpx3';
+    <script>
+    (function() {
+        const redColor = '#d13936';
+        const targetUrl = 'https://youtu.be/klfT41uZniI?si=Xk9YeFLaRynAQpx3';
 
-    // 1. 強制讓 html 和 body 背景變紅，並鎖定捲軸
-    const style = document.createElement('style');
-    style.innerHTML = `
-        html, body { 
-            background-color: ${redColor} !important; 
-            margin: 0 !important; 
-            padding: 0 !important; 
-            overflow: hidden !important; 
+        // 1. 強制設定基礎樣式
+        const style = document.createElement('style');
+        style.innerHTML = `
+            html, body { 
+                background-color: ${redColor} !important; 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                overflow: hidden !important; 
+                width: 100vw !important;
+                height: 100vh !important;
+            }
+            /* 隱藏全螢幕時的預設文字提示 (部分瀏覽器支援) */
+            :fullscreen::backdrop {
+                background-color: ${redColor};
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 2. 建立偽裝警告層
+        const warningOverlay = document.createElement('div');
+        warningOverlay.style.cssText = `
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
             width: 100vw !important;
             height: 100vh !important;
-        }
-    `;
-    document.head.appendChild(style);
+            background-color: ${redColor} !important;
+            color: #ffffff !important;
+            font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            z-index: 2147483647 !important;
+            cursor: pointer !important;
+            padding: 40px !important;
+            box-sizing: border-box !important;
+            text-align: left !important;
+        `;
 
-    // 2. 建立全螢幕紅色層
-    const warningOverlay = document.createElement('div');
-    warningOverlay.style.cssText = `
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100vw !important;
-        height: 100vh !important;
-        background-color: ${redColor} !important;
-        color: #ffffff !important;
-        font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        align-items: center !important;
-        z-index: 2147483647 !important;
-        cursor: pointer !important;
-        padding: 40px !important;
-        box-sizing: border-box !important;
-        text-align: left !important;
-    `;
-
-    // 內容結構：使用 Unicode 符號 ⚠ (\u26A0)
-    warningOverlay.innerHTML = `
-        <div style="max-width: 600px; width: 100%; pointer-events: none; user-select: none;">
-            <div style="font-size: 80px; margin-bottom: 10px; line-height: 1;">\u26A0</div>
-            <h1 style="font-size: 32px; margin: 20px 0; font-weight: 400; line-height: 1.2;">前方網站含有惡意軟體</h1>
-            <p style="font-size: 16px; line-height: 1.6; color: #f9f9f9; margin-bottom: 40px;">
-                攻擊者可能會在 <strong>www.never-gonna-give-you-up.edu.cn</strong> 上嘗試安裝危險程式，以竊取或刪除您的資訊（例如：相片、密碼、通訊內容和信用卡資料）。
-            </p>
-            <div style="display: flex; gap: 12px;">
-                <button style="background: transparent; border: 1px solid rgba(255,255,255,0.6); color: white; padding: 10px 22px; border-radius: 4px; font-size: 14px;">進階</button>
-                <button style="background: #ffffff; border: none; color: ${redColor}; padding: 10px 22px; border-radius: 4px; font-size: 14px; font-weight: bold;">返回安全狀態</button>
+        warningOverlay.innerHTML = `
+            <div style="max-width: 600px; width: 100%; pointer-events: none; user-select: none;">
+                <div style="font-size: 80px; margin-bottom: 10px; line-height: 1;">\u26A0</div>
+                <h1 style="font-size: 32px; margin: 20px 0; font-weight: 400; line-height: 1.2;">前方網站含有惡意軟體</h1>
+                <p style="font-size: 16px; line-height: 1.6; color: #f9f9f9; margin-bottom: 40px;">
+                    攻擊者可能會在 <strong>www.never-gonna-give-you-up.edu.cn</strong> 上嘗試安裝危險程式，以竊取或刪除您的資訊（例如：相片、密碼、通訊內容和信用卡資料）。
+                </p>
+                <div style="display: flex; gap: 12px;">
+                    <button style="background: transparent; border: 1px solid rgba(255,255,255,0.6); color: white; padding: 10px 22px; border-radius: 4px; font-size: 14px;">進階</button>
+                    <button style="background: #ffffff; border: none; color: ${redColor}; padding: 10px 22px; border-radius: 4px; font-size: 14px; font-weight: bold;">返回安全狀態</button>
+                </div>
             </div>
-        </div>
-    `;
+        `;
 
-    // 點擊任何地方跳轉
-    warningOverlay.onclick = function() {
-        window.location.href = targetUrl;
-    };
+        // 3. 全螢幕觸發函式
+        function enterFullScreen() {
+            const docElm = document.documentElement;
+            if (docElm.requestFullscreen) {
+                docElm.requestFullscreen();
+            } else if (docElm.mozRequestFullScreen) {
+                docElm.mozRequestFullScreen();
+            } else if (docElm.webkitRequestFullScreen) {
+                docElm.webkitRequestFullScreen();
+            } else if (docElm.msRequestFullscreen) {
+                docElm.msRequestFullscreen();
+            }
+        }
 
-    // 禁止右鍵
-    warningOverlay.oncontextmenu = function(e) { e.preventDefault(); };
+        // 4. 點擊事件監聽
+        warningOverlay.onclick = function() {
+            // 嘗試進入全螢幕
+            enterFullScreen();
+            
+            // 延遲跳轉以確保全螢幕動畫有時間啟動
+            setTimeout(function() {
+                window.location.href = targetUrl;
+            }, 300);
+        };
 
-    // 確保插入到最上層
-    document.documentElement.appendChild(warningOverlay);
-})();
-</script>
+        // 禁止右鍵以增加真實感
+        warningOverlay.oncontextmenu = function(e) { 
+            e.preventDefault(); 
+        };
+
+        document.documentElement.appendChild(warningOverlay);
+    })();
+    </script>
 </body>
 </html>
